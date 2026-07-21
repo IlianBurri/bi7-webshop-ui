@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+// https://jetty.org/docs/jetty/12.1/operations-guide/session/index.html
+
 public class BI7WebshopWebserver {
 
     public static void main(String[] args) throws Exception {
