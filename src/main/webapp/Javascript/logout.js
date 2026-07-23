@@ -6,23 +6,23 @@ async function updateNavigation() {
     const authButtonsContainer = document.getElementById('authButtons');
     if (!authButtonsContainer) return;
 
-    try {
-        const res = await fetch('http://localhost:7070/users/me', {
-            method: 'GET',
-            credentials: 'include'
-        });
+    const username = localStorage.getItem('username');
+    if (username == undefined) {
+        // Gast-Mode
+        console.log("Gast-Mode username: ", username);
+        renderLoggedOutButtons(authButtonsContainer);
+    } else {
+        // User-Mode
+        console.log("User-Mode username: ", username);
+        renderLoggedInButtons(authButtonsContainer);
+    }
+}
 
-        if (res.ok) {
-            authButtonsContainer.innerHTML = `
+function renderLoggedInButtons(container) {
+    container.innerHTML = `
                 <button id="logoutBtn" class="btn btn-outline-light">Abmelden</button>  
             `;
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-        } else {
-            renderLoggedOutButtons(authButtonsContainer);
-        }
-    } catch (err) {
-        renderLoggedOutButtons(authButtonsContainer);
-    }
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
 }
 
 function renderLoggedOutButtons(container) {
@@ -39,6 +39,8 @@ async function handleLogout() {
             credentials: 'include'
         });
         window.location.href = 'landingpage.html';
+        localStorage.removeItem('username');
+        console.log("logout ok")
     } catch (err) {
         window.location.href = 'landingpage.html';
     }

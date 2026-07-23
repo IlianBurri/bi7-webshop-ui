@@ -23,13 +23,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         console.log("3. Antwort vom Server (Status):", res.status, res.statusText);
 
         if (res.ok) {
-            console.log('Login success');
-
-            const authID = crypto.randomUUID
-                ? crypto.randomUUID()
-                : Date.now().toString(36) + Math.random().toString(36).slice(2);
-            localStorage.setItem('authID', authID);
-            console.log('4. authID generiert und gespeichert:', authID);
+            const json = await res.json();
+            console.log('Login success: ', json);
+            const username = json.username;
+            localStorage.setItem('username', username);
+            console.log('4. username:', username);
 
             console.log("5. Leite weiter zu landingpage.html");
             window.location.href = '../HTML/landingpage.html';
