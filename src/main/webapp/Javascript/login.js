@@ -15,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     try {
         const res = await fetch('http://localhost:7070/users/login', {
             method: 'POST',
-            credentials: "include",
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
@@ -23,17 +23,16 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         console.log("3. Antwort vom Server (Status):", res.status, res.statusText);
 
         if (res.ok) {
-            console.log('Login success')
-            localStorage.setItem('authID', authID)
-            //const sessionId = res.headers.get('sessionId');
-            //console.log("4. Session ID erhalten:", sessionId);
+            console.log('Login success');
 
-            //if (sessionId) {
-            //    localStorage.setItem('sessionId', sessionId);
-            //}
+            const authID = crypto.randomUUID
+                ? crypto.randomUUID()
+                : Date.now().toString(36) + Math.random().toString(36).slice(2);
+            localStorage.setItem('authID', authID);
+            console.log('4. authID generiert und gespeichert:', authID);
 
-            console.log("5. Leite weiter zu loginSucces.html");
-            window.location.href = './landingpage.html';
+            console.log("5. Leite weiter zu landingpage.html");
+            window.location.href = '../HTML/landingpage.html';
         } else {
             const result = await res.json();
             console.warn("Server meldet Fehler:", result);

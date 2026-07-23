@@ -27,8 +27,8 @@ async function updateNavigation() {
 
 function renderLoggedOutButtons(container) {
     container.innerHTML = `
-        <a href="registerForm.html" class="btn btn-outline-light">Registrieren</a>
-        <a href="loginForm.html" class="btn btn-light text-primary">Login</a>
+        <a href="../HTML/registerForm.html" class="btn btn-outline-light">Registrieren</a>
+        <a href="../HTML/loginForm.html" class="btn btn-light text-primary">Login</a>
     `;
 }
 
