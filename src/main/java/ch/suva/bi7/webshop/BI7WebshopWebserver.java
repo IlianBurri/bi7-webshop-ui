@@ -1,7 +1,6 @@
 package ch.suva.bi7.webshop;
 
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 
@@ -18,7 +17,6 @@ public class BI7WebshopWebserver {
     public static int getDefaultPort() {
         return DEFAULT_PORT;
     }
-
     public static Path resolveWebAppDir(String workingDirectory) {
         Path projectRoot = Paths.get(workingDirectory).toAbsolutePath().normalize();
         if (projectRoot.endsWith(Paths.get("src", "main"))) {
@@ -42,8 +40,7 @@ public class BI7WebshopWebserver {
         webAppContext.setContextPath("/");
         webAppContext.setWelcomeFiles(new String[]{"HTML/landingpage.html"});
 
-        BuffApiHandler apiHandler = new BuffApiHandler();
-        server.setHandler(new Handler.Sequence(apiHandler, webAppContext));
+        server.setHandler(webAppContext);
 
         server.start();
         System.out.println("Server started!");
