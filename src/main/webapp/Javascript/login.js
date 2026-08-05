@@ -9,7 +9,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         email: document.getElementById('email').value.trim(),
         password: document.getElementById('password').value
     };
-
     console.log("2. Daten vor dem Senden:", userData);
 
     try {
@@ -19,22 +18,28 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
-
         console.log("3. Antwort vom Server (Status):", res.status, res.statusText);
 
         if (res.ok) {
             const json = await res.json();
-            console.log('Login success: ', json);
-            const username = json.username;
+            console.log('Login-Antwort:', json);
+
+            if (json.status === 'info') {
+                alert(json.error);
+                window.location.href = '../HTML/landingpage.html';
+                return;
+            }
+
+            const username  = json.username;
             localStorage.setItem('username', username);
             console.log('4. username:', username);
-
             console.log("5. Leite weiter zu landingpage.html");
             window.location.href = '../HTML/landingpage.html';
+
         } else {
             const result = await res.json();
             console.warn("Server meldet Fehler:", result);
-            alert('Fehler: ' + (result.message || 'Login fehlgeschlagen'));
+            alert('Fehler: ' + (result.error || 'Login fehlgeschlagen'));
         }
     } catch (err) {
         console.error('Netzwerk-/Serverfehler:', err);
