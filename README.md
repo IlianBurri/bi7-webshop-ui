@@ -27,6 +27,6 @@ ch.suva.bi7.webshop.BI7WebshopWebserver
 
 ## Hinweise
 
-- Der Webserver ist kein vollständiges Backend.
+- Der Webserver selber reicht nicht um den Webshop ganz zu nutzen, der Webserver ist nur für das UI für die Volle Funktionalität muss noch das Backend und die DB installiert und aufgesetzt werden.
 - Login, Registrierung und andere serverseitige Funktionen hängen vom separaten Backend ab.
 - Falls etwas nicht funktioniert, zuerst prüfen, ob das Backend läuft und die Datenbank korrekt eingerichtet ist.
