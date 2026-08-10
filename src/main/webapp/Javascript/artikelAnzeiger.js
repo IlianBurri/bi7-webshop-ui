@@ -97,8 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchArtikel();
 });
 
-
 function fetchArtikel() {
+    const container = document.getElementById('products');
+
+    if (container) {
+        container.innerHTML = '<div class="spinner"></div>';
+    }
 
     fetch('http://localhost:7070/artikel', {
         method: 'GET',
@@ -106,31 +110,19 @@ function fetchArtikel() {
             'Content-Type': 'application/json'
         }
     })
-
         .then(response => {
-
             if (!response.ok) {
                 throw new Error('Netzwerk-Antwort war nicht ok: ' + response.statusText);
             }
-
             return response.json();
-
         })
-
         .then(artikelListe => {
-
             displayArtikel(artikelListe);
-
         })
-
         .catch(error => {
-
             console.error('Fehler beim Laden der Artikel:', error);
 
-            const container = document.getElementById('products');
-
             if (container) {
-
                 container.innerHTML = `
                 <p class="error-message">
                     Fehler beim Laden der Artikel.
@@ -138,89 +130,55 @@ function fetchArtikel() {
                 </p>
             `;
             }
-
         });
 }
 
-
-
 function displayArtikel(artikelListe) {
-
     const container = document.getElementById('products');
-
     if (!container) return;
 
-
-    // Alte Produkte entfernen
+    // Alte Inhalte (inklusive Spinner) entfernen
     container.innerHTML = "";
-
 
     // Keine Artikel vorhanden
     if (artikelListe.length === 0) {
-
         container.innerHTML = `
             <p class="empty-message">
                 Keine Artikel verfügbar.
             </p>
         `;
-
         return;
     }
 
-
     // Für jeden Artikel eine Kachel erstellen
     artikelListe.forEach(artikel => {
-
-
         const product = document.createElement("article");
-
         product.classList.add("product");
-
 
         const bildPfad = artikel.bild
             ? artikel.bild
             : "https://via.placeholder.com/300x200?text=Kein+Bild";
 
-
         product.innerHTML = `
-
             <img 
                 src="${bildPfad}" 
                 alt="${artikel.name}"
                 onerror="this.src='https://via.placeholder.com/300x200?text=Bild+Fehler'"
             >
-
-            <h3>
-                ${artikel.name}
-            </h3>
-
-            <p>
-                CHF ${Number(artikel.preis).toFixed(2)}
-            </p>
-
+            <h3>${artikel.name}</h3>
+            <p>CHF ${Number(artikel.preis).toFixed(2)}</p>
             <button onclick="inDenWarenkorb(${artikel.artikelId})">
                 In den Warenkorb
             </button>
-
         `;
 
-
         container.appendChild(product);
-
     });
-
 }
-
-
 
 function inDenWarenkorb(artikelId) {
-
     console.log('Artikel zum Warenkorb hinzugefügt:', artikelId);
-
 }
-
-
-
 
 
 
