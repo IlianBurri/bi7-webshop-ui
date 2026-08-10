@@ -37,7 +37,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             window.location.href = 'registrationSucces.html';
         } else {
             const result = await res.json();
-            alert('Fehler: ' + (result.message || 'Registrierung fehlgeschlagen'));
+            alert('Fehler: ' + (result.error || 'Registrierung fehlgeschlagen'));
         }
     } catch (err) {
         alert('Server nicht erreichbar!');

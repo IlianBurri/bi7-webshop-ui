@@ -35,13 +35,15 @@ function renderLoggedOutButtons(container) {
 async function handleLogout() {
     try {
         await fetch('http://localhost:7070/users/logout', {
-            method: 'POST',
-            credentials: 'include'
+            method: 'POST'
         });
         window.location.href = 'landingpage.html';
         localStorage.removeItem('username');
+        localStorage.removeItem('userEmail');
         console.log("logout ok")
     } catch (err) {
         window.location.href = 'landingpage.html';
+        localStorage.removeItem('username');
+        localStorage.removeItem('userEmail');
     }
 }

@@ -46,6 +46,19 @@
     background-color: #00378a;
 }
 
+.quantity-row {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #000000;
+}
+
 .spinner {
     width: 45px;
     height: 45px;

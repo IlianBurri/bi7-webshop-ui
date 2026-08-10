@@ -14,7 +14,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     try {
         const res = await fetch('http://localhost:7070/users/login', {
             method: 'POST',
-            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
@@ -32,7 +31,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
             const username  = json.username;
             localStorage.setItem('username', username);
-            console.log('4. username:', username);
+            localStorage.setItem('userEmail', userData.email);
+            console.log('4. username:', username, 'email:', userData.email);
             console.log("5. Leite weiter zu landingpage.html");
             window.location.href = '../HTML/landingpage.html';
 
