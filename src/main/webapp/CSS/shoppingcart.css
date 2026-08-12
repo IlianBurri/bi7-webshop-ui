@@ -150,8 +150,16 @@
     font-weight: bold;
     cursor: pointer;
     width: 100%;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 .checkout-btn:hover {
     background-color: #00378a;
+}
+
+.checkout-btn:active {
+    background-color: #002a66;
 }

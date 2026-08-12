@@ -5,19 +5,18 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.staticfiles.Location;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class BI7WebshopWebserver {
 
@@ -26,20 +25,6 @@ public class BI7WebshopWebserver {
     private static final String JDBC_USER = "sa";
     private static final String JDBC_PASSWORD = "";
     private static final WarenkorbDao WARENKORB_DAO = new WarenkorbDao();
-
-    // Identisches Schema und Testdaten wie im Backend-Repo (bi7-webshop-service) dokumentiert.
-    private static final List<ArtikelSeed> ARTIKEL_SEEDS = List.of(
-            new ArtikelSeed(1, "iPhone 15 Pro", 1199.00, "https://imgs.search.brave.com/XKzj-Ry1DHNPSKMfAu3qWuKp_PdZCmUA9_yPjrLtfP8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zczcu/dnp3LmNvbS9pcy9p/bWFnZS9WZXJpem9u/V2lyZWxlc3MvYXBw/bGUtaXBob25lLTE1/LXByby0xdGItbmF0/dXJhbC10aXRhbml1/bS1tdHU1M2xsLWEt/YT93aWQ9NDAwJmhl/aT00MDAmZm10PXdl/YnAtYWxwaGE"),
-            new ArtikelSeed(2, "Samsung Galaxy S24", 899.90, "https://imgs.search.brave.com/BkadkX__5a26LuCKGPBUVS5kY4cRhKoh2dXmvCeXYgk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLWNk/bi5waG9uZWFyZW5h/LmNvbS9pbWFnZXMv/cGhvbmVzLzg0Mzg5/LTM1MC9TYW1zdW5n/LUdhbGF4eS1TMjQu/d2VicD93PTE"),
-            new ArtikelSeed(3, "MacBook Air M3", 1299.00, "https://imgs.search.brave.com/oLakeowrB4SYM_w-OwZtOz1sgZ0rQlQdqIA4pcgJ5XY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/bW9zLmNtcy5mdXR1/cmVjZG4ubmV0L2l4/S3FkbUdvY3lqUm80/OWE5VGk2a2MuanBn"),
-            new ArtikelSeed(4, "Sony WH-1000XM5 Kopfhörer", 349.00, "https://imgs.search.brave.com/TF1Xaz1hrrvM-SwfAeWQBMxZmyACkFpkvsBDrjPwLA8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5jb29sYmx1ZS5k/ZS9tYXgvNzAweGF1/dG8vcHJvZHVjdHMv/MTc1NTc1OQ"),
-            new ArtikelSeed(5, "iPad Air", 699.00, "https://imgs.search.brave.com/Vco2VWHR0elSR7DgrcuCrQdoLnrnJsFJ0kyKmpqMn78/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/bW9zLmNtcy5mdXR1/cmVjZG4ubmV0L2tV/RTNRMm1weThhbW9j/Vlp2b2NkVWEtMzIw/LTgwLmpwZw"),
-            new ArtikelSeed(6, "PlayStation 5", 499.00, "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500&auto=format&fit=crop"),
-            new ArtikelSeed(7, "Dell XPS 13 Laptop", 1399.50, "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500&auto=format&fit=crop"),
-            new ArtikelSeed(8, "Apple Watch Series 9", 429.00, "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500&auto=format&fit=crop"),
-            new ArtikelSeed(9, "LG OLED TV 55 Zoll", 1299.90, "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&auto=format&fit=crop"),
-            new ArtikelSeed(10, "Logitech MX Master 3S Maus", 109.90, "https://imgs.search.brave.com/u4KQhRP6KF4HT7OVjZBlf0ZnK6jHa3omFvYlzpjfK9E/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL1JmTUFB/ZVN3SUNWcDU1ZGIv/cy1sMjI1LmpwZw")
-    );
 
     public static int getDefaultPort() {
         return DEFAULT_PORT;
@@ -74,8 +59,6 @@ public class BI7WebshopWebserver {
     public static void main(String[] args) throws Exception {
         Path webAppDir = resolveWebAppDir(System.getProperty("user.dir"));
 
-        initDatabase();
-
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/";
@@ -97,57 +80,6 @@ public class BI7WebshopWebserver {
 
         app.start(getPort());
         System.out.println("Server started on port " + getPort() + "!");
-    }
-
-    private static void initDatabase() {
-        String artikelSql = """
-                CREATE TABLE IF NOT EXISTS artikel (
-                    artikelId INT AUTO_INCREMENT PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL,
-                    preis DECIMAL(10, 2) NOT NULL,
-                    bild VARCHAR(500)
-                )
-                """;
-        String warenkorbSql = """
-                CREATE TABLE IF NOT EXISTS warenkorb_item (
-                    warenkorbItemId INT AUTO_INCREMENT PRIMARY KEY,
-                    userEmail VARCHAR(255) NOT NULL,
-                    artikelId INT NOT NULL,
-                    menge INT NOT NULL DEFAULT 1,
-                    FOREIGN KEY (artikelId) REFERENCES artikel (artikelId)
-                )
-                """;
-
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(artikelSql);
-            statement.execute(warenkorbSql);
-            seedArtikelIfEmpty(connection);
-        } catch (SQLException e) {
-            throw new IllegalStateException("Could not initialize database", e);
-        }
-    }
-
-    private static void seedArtikelIfEmpty(Connection connection) throws SQLException {
-        try (PreparedStatement countStatement = connection.prepareStatement("SELECT COUNT(*) FROM artikel");
-             ResultSet resultSet = countStatement.executeQuery()) {
-            resultSet.next();
-            if (resultSet.getInt(1) > 0) {
-                return;
-            }
-        }
-
-        String insertSql = "INSERT INTO artikel (artikelId, name, preis, bild) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(insertSql)) {
-            for (ArtikelSeed artikel : ARTIKEL_SEEDS) {
-                statement.setInt(1, artikel.artikelId());
-                statement.setString(2, artikel.name());
-                statement.setDouble(3, artikel.preis());
-                statement.setString(4, artikel.bild());
-                statement.addBatch();
-            }
-            statement.executeBatch();
-        }
     }
 
     private static void handleAddArtikelToWarenkorb(Context ctx) {
@@ -272,8 +204,5 @@ public class BI7WebshopWebserver {
 
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-    }
-
-    private record ArtikelSeed(int artikelId, String name, double preis, String bild) {
     }
 }

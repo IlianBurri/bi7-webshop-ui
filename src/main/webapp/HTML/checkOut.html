@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Webshop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="../CSS/paymentWindow.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-primary mb-4" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="landingpage.html">Webshop</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="landingpage.html">Home</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-3">
+                <li class="nav-item">
+                    <a class="btn btn-outline-light" href="warenkorb.html">
+                        <i class="bi bi-cart"></i> Warenkorb
+                    </a>
+                </li>
+            </ul>
+
+            <div id="authButtons" class="d-flex gap-2"></div>
+        </div>
+    </div>
+</nav>
+
+<main class="checkout-container">
+    <h1>Checkout</h1>
+    <p class="checkout-subtitle">Schliesse deine Bestellung ab und bezahle sicher.</p>
+
+    <form id="checkout-form" class="checkout-form">
+        <section class="checkout-section">
+            <h2>Lieferadresse</h2>
+
+            <div class="address-select-group">
+                <label for="saved-address">Gespeicherte Adresse verwenden</label>
+                <select id="saved-address" name="saved-address">
+                    <option value="">Bitte wählen …</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="vorname">Vorname</label>
+                    <input type="text" id="vorname" name="vorname" placeholder="Max" autocomplete="given-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="nachname">Nachname</label>
+                    <input type="text" id="nachname" name="nachname" placeholder="Muster" autocomplete="family-name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="strasse">Strasse und Hausnummer</label>
+                <input type="text" id="strasse" name="strasse" placeholder="Musterstrasse 1" autocomplete="street-address" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="plz">PLZ</label>
+                    <input type="text" id="plz" name="plz" placeholder="8000" inputmode="numeric" autocomplete="postal-code" required>
+                </div>
+                <div class="form-group">
+                    <label for="ort">Ort</label>
+                    <input type="text" id="ort" name="ort" placeholder="Zürich" autocomplete="address-level2" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="land">Land</label>
+                <input type="text" id="land" name="land" placeholder="Schweiz" autocomplete="country-name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="email" placeholder="max.muster@example.ch" autocomplete="email" required>
+            </div>
+        </section>
+
+        <section class="checkout-section">
+            <h2>Zahlungsinformationen</h2>
+
+            <div class="form-group">
+                <label for="karteninhaber">Karteninhaber</label>
+                <input type="text" id="karteninhaber" name="karteninhaber" placeholder="Max Muster" autocomplete="cc-name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="kartennummer">Kartennummer</label>
+                <input type="text" id="kartennummer" name="kartennummer" placeholder="0000 0000 0000 0000"
+                       inputmode="numeric" autocomplete="cc-number" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ablauf">Ablaufdatum</label>
+                    <input type="text" id="ablauf" name="ablauf" placeholder="MM/JJ" autocomplete="cc-exp" required>
+                </div>
+                <div class="form-group">
+                    <label for="cvc">CVC</label>
+                    <input type="text" id="cvc" name="cvc" placeholder="123" inputmode="numeric" maxlength="4"
+                           autocomplete="cc-csc" required>
+                </div>
+            </div>
+        </section>
+
+        <div class="save-address-group">
+            <label for="save-address" class="checkbox-label">
+                <input type="checkbox" id="save-address" name="save-address">
+                <span>Adresse für das nächste Mal speichern</span>
+            </label>
+        </div>
+
+        <div class="checkout-actions">
+            <a href="warenkorb.html" class="back-btn">
+                <i class="bi bi-arrow-left"></i> Zurück zum Warenkorb
+            </a>
+            <button type="submit" class="pay-btn">
+                <i class="bi bi-lock-fill"></i> Jetzt bezahlen
+            </button>
+        </div>
+    </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../Javascript/logout.js?v=3"></script>
+<script src="../Javascript/checkout.js?v=1"></script>
+</body>
+</html>
