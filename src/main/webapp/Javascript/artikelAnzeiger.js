@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchArtikel() {
     const container = document.getElementById('products');
 
+    // Hinweis: Der Lade-Spinner wird hier per JavaScript erzeugt – es gibt kein
+    // statisches Loader-Element im HTML. Das CSS dazu steht in products.css (.spinner).
     if (container) {
         container.innerHTML = '<div class="spinner"></div>';
     }

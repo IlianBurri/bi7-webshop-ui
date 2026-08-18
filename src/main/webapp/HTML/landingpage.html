@@ -23,6 +23,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="landingpage.html">Home</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-3">
@@ -36,18 +37,7 @@
             <div id="authButtons" class="d-flex gap-2"></div>
         </div>
     </div>
-    </div>
 </nav>
-
-<!--div class="container">
-    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
-        <div class="container-fluid py-5">
-            <h1 id="welcomeLabel" class="display-5 fw-bold">Willkommen im Webshop!</h1>
-            <p class="col-md-8 fs-4">Entdecke unsere besten Angebote und Produkte.</p>
-        </div>
-    </div>
-</div>
-<div id="artikel-container"></div>-->
 
 <section class="products" id="products">
 
@@ -70,12 +60,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../Javascript/logout.js?v=3"></script>
 <script src="../Javascript/artikelAnzeiger.js?v=3"></script>
-<script>
-    const welcomeLabel = document.getElementById('welcomeLabel');
-    const username = localStorage.getItem('username');
-    if (welcomeLabel && username) {
-        welcomeLabel.innerText = 'Willkommen im Webshop, ' + username + '!';
-    }
-</script>
 </body>
 </html>

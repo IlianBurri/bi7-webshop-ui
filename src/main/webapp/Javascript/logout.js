@@ -4,13 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function updateNavigation() {
     const authButtonsContainer = document.getElementById('authButtons');
-    if (!authButtonsContainer) return;
-
-    const username = localStorage.getItem('username');
-    if (username) {
-        renderLoggedInButtons(authButtonsContainer);
+    if (authButtonsContainer) {
+        const username = localStorage.getItem('username');
+        if (username) {
+            renderLoggedInButtons(authButtonsContainer);
+        } else {
+            renderLoggedOutButtons(authButtonsContainer);
+        }
     } else {
-        renderLoggedOutButtons(authButtonsContainer);
+        // Kein authButtons-Container vorhanden (z. B. auf loginSucces.html):
+        // einen statischen #logoutBtn trotzdem anbinden, damit Abmelden funktioniert.
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
     }
 }
 

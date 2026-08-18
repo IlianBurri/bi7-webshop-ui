@@ -30,3 +30,5 @@ ch.suva.bi7.webshop.BI7WebshopWebserver
 - Der Webserver selber reicht nicht um den Webshop ganz zu nutzen, der Webserver ist nur für das UI für die Volle Funktionalität muss noch das Backend und die DB installiert und aufgesetzt werden.
 - Login, Registrierung und andere serverseitige Funktionen hängen vom separaten Backend ab.
 - Falls etwas nicht funktioniert, zuerst prüfen, ob das Backend läuft und die Datenbank korrekt eingerichtet ist.
+- Der Lade-Spinner auf der Startseite wird per JavaScript erzeugt (`Javascript/artikelAnzeiger.js`) – es gibt kein statisches Loader-Element in `HTML/landingpage.html`. Das CSS dazu steht in `CSS/products.css` (Klasse `.spinner`).
+- Login-, Registrierungs- und Erfolgsseiten nutzen das eigene Mini-Design-System in `CSS/design-system.css` (Utility-Klassen wie `.container`, `.stack`, `.cluster`, `.btn-primary`). Nur die Navigationsleiste verwendet weiterhin Bootstrap.
