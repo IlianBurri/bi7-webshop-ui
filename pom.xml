@@ -29,9 +29,16 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.javalin</groupId>
-      <artifactId>javalin-bundle</artifactId>
-      <version>7.2.2</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>12.1.10</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.ee10</groupId>
+      <artifactId>jetty-ee10-webapp</artifactId>
+      <version>12.1.10</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
