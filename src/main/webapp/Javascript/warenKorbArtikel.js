@@ -1,6 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
+    setCheckoutButtonState(false);
     renderCart();
+
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', (e) => {
+            if (checkoutBtn.classList.contains('disabled')) {
+                e.preventDefault();
+            }
+        });
+    }
 });
+
+function setCheckoutButtonState(enabled) {
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (!checkoutBtn) return;
+
+    if (enabled) {
+        checkoutBtn.classList.remove('disabled');
+        checkoutBtn.removeAttribute('aria-disabled');
+        checkoutBtn.removeAttribute('tabindex');
+    }
+        else {
+            checkoutBtn.classList.add('disabled');
+            checkoutBtn.setAttribute('aria-disabled', 'true');
+            checkoutBtn.setAttribute('tabindex', '-1');
+        }
+    }
 
 async function renderCart() {
     const cartContainer = document.getElementById('cart-items');
@@ -11,10 +37,10 @@ async function renderCart() {
     }
 
     const userEmail = localStorage.getItem('userEmail');
-
     if (!userEmail) {
         cartContainer.innerText = 'Bitte einloggen';
         totalPriceEl.innerText = 'CHF 0.00';
+        setCheckoutButtonState(false);
         return;
     }
 
@@ -30,11 +56,14 @@ async function renderCart() {
         cartContainer.innerHTML = '';
 
         if (cart.length === 0) {
+
             cartContainer.innerHTML = '<p>Dein Warenkorb ist aktuell leer.</p>';
             totalPriceEl.innerText = 'CHF 0.00';
+            setCheckoutButtonState(false);
             return;
         }
 
+        setCheckoutButtonState(true);
         let total = 0;
 
         cart.forEach(item => {
@@ -95,6 +124,7 @@ async function renderCart() {
         console.error('Fehler beim Laden des Warenkorbs:', error);
         cartContainer.innerHTML = '<p>Fehler beim Laden des Warenkorbs.</p>';
         totalPriceEl.innerText = 'CHF 0.00';
+        setCheckoutButtonState(false);
     }
 }
 

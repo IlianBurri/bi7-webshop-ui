@@ -134,3 +134,8 @@
 .checkout-btn:active {
     background-color: #002a66;
 }
+.checkout-btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
