@@ -6,47 +6,12 @@ const MAX_PREIS = 99999999.99;
 const MAX_BILD_LAENGE = 500;
 
 document.addEventListener('DOMContentLoaded', () => {
-    checkAdminStatus();
 
     const form = document.getElementById('adminForm');
     if (form) {
         form.addEventListener('submit', handleSubmit);
     }
 });
-
-async function checkAdminStatus() {
-    try {
-        const res = await fetch(`${ADMIN_API_BASE}/users/me`, {
-            credentials: 'include'
-        });
-
-        if (!res.ok) {
-            clearAuthState();
-            blockZugriff('Sitzung abgelaufen oder nicht eingeloggt. Bitte erneut einloggen.', 'loginForm.html');
-            return;
-        }
-
-        const user = await res.json();
-
-        if (user.isAdmin !== true) {
-            blockZugriff('Zugriff verweigert: Dieser Bereich ist nur für Administratoren.', 'landingpage.html');
-        }
-    } catch (err) {
-        console.error('Fehler beim Prüfen des Admin-Status:', err);
-        blockZugriff('Backend nicht erreichbar. Bitte später erneut versuchen.', 'landingpage.html');
-    }
-}
-
-function clearAuthState() {
-    localStorage.removeItem('username');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('isAdmin');
-}
-
-function blockZugriff(message, ziel = 'landingpage.html') {
-    alert(message);
-    window.location.href = ziel;
-}
 
 async function handleSubmit(event) {
     event.preventDefault();

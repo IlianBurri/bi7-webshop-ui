@@ -1,3 +1,22 @@
+document.addEventListener('DOMContentLoaded', () => {
+    updateAdmin();
+});
+
+async function updateAdmin() {
+    const adminButtonContainer = document.getElementById('adminButtonContainer');
+    if (adminButtonContainer) {
+        const isAdmin = localStorage.getItem('isAdmin')
+        if (isAdmin === 'true') {
+            // Admin-Button erzeugen
+            const adminButton = `<a href="../HTML/adminHub.html" class="btn btn-outline-light">
+                                            <i class="bi bi-gear"></i> Admin Bereich</a>`;
+            adminButtonContainer.innerHTML = `${adminButton}`;
+        } else {
+            adminButtonContainer.innerHTML = ``;
+        }
+    }
+}
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -17,6 +36,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         if (res.ok) {
             const json = await res.json();
 
+            // Dieses If braucht es eigentlich nicht, da der Login-Button nicht mehr verfügbar ist wenn man eingeloggt ist!
             if (json.status === 'info') {
                 alert(json.error);
                 window.location.href = '../HTML/landingpage.html';
