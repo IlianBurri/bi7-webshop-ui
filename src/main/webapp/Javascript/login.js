@@ -10,6 +10,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const res = await fetch('http://localhost:7070/users/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(userData)
         });
 
@@ -24,6 +25,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
             localStorage.setItem('username', json.username);
             localStorage.setItem('userEmail', userData.email);
+            localStorage.setItem('isAdmin', json.isAdmin);
             window.location.href = '../HTML/landingpage.html';
         } else {
             const result = await res.json();

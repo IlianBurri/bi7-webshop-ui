@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LandingPage-Webshop</title>
+    <title>Admin Bereich - Webshop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="../CSS/products.css" rel="stylesheet">
+    <link href="../CSS/adminHub.css" rel="stylesheet">
 </head>
 <body>
 
@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="landingpage.html">Home</a>
+                    <a class="nav-link" href="landingpage.html">Home</a>
                 </li>
             </ul>
 
@@ -39,25 +39,39 @@
     </div>
 </nav>
 
-<section class="products" id="products">
+<main>
+    <form id="adminForm" class="admin-form" novalidate>
+        <h1>Artikel hinzufügen</h1>
 
-    <article class="product">
+        <div class="admin-form__group">
+            <label for="artikelName">Artikel Name</label>
+            <input type="text" id="artikelName" name="name" maxlength="255"
+                   placeholder="z. B. iPhone 15 Pro" autocomplete="off">
+            <p class="admin-form__error" id="nameError"></p>
+        </div>
 
-        <img src="" alt="Produktbild">
+        <div class="admin-form__group">
+            <label for="artikelPreis">Preis (CHF)</label>
+            <input type="number" id="artikelPreis" name="preis" min="0.01" step="0.01"
+                   placeholder="z. B. 1199.00">
+            <p class="admin-form__error" id="preisError"></p>
+        </div>
 
-        <h3></h3>
+        <div class="admin-form__group">
+            <label for="artikelBild">Bild-Link</label>
+            <input type="url" id="artikelBild" name="bild"
+                   placeholder="https://example.com/bild.jpg">
+            <p class="admin-form__error" id="bildError"></p>
+        </div>
 
-        <p></p>
+        <button type="submit" class="admin-form__submit">Artikel hinzufügen</button>
 
-        <button>
-            In den Warenkorb
-        </button>
+        <p class="admin-form__status" id="formStatus"></p>
+    </form>
+</main>
 
-    </article>
-
-</section>
-<script src="../Javascript/artikelAnzeiger.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../Javascript/logout.js"></script>
+<script src="../Javascript/logout.js?v=7"></script>
+<script src="../Javascript/adminHub.js?v=4"></script>
 </body>
 </html>
