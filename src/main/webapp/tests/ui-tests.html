@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webshop UI Smoke Tests</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { margin-top: 0; }
+        .pass { color: #1a7f37; }
+        .fail { color: #d1242f; }
+        #summary { margin: 1rem 0; font-weight: bold; }
+        #fixture { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #ddd; }
+        code { background: #f6f8fa; padding: 0.1rem 0.3rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<h1>Webshop UI Smoke Tests (No Framework)</h1>
+<p>Open browser console for detailed errors.</p>
+<div id="summary">Running...</div>
+<ul id="results"></ul>
+<div id="fixture" aria-live="polite"></div>
+<script src="ui-tests.js"></script>
+</body>
+</html>
+
