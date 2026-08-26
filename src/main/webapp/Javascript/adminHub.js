@@ -42,7 +42,7 @@ async function handleSubmit(event) {
     try {
         const res = await fetch(`${ADMIN_API_BASE}/artikel`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             credentials: 'include',
             body: JSON.stringify(artikel)
         });
@@ -51,7 +51,9 @@ async function handleSubmit(event) {
             if (res.status === 403) {
                 clearAuthState();
                 setStatus('Sitzung abgelaufen oder keine Berechtigung. Bitte erneut als Admin einloggen.', 'error');
-                setTimeout(() => { window.location.href = 'loginForm.html'; }, 1500);
+                (window.redirectTo || ((url) => {
+                    window.location.href = url;
+                }))('loginForm.html');
                 return;
             }
             throw new Error('Backend-Antwort nicht ok: ' + res.status);
@@ -142,4 +144,5 @@ function setStatus(message, type) {
     if (type) {
         statusElement.classList.add(type);
     }
+    window.handleSubmit = handleSubmit;
 }

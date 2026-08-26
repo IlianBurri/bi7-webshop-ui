@@ -5,22 +5,333 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webshop UI Smoke Tests</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        h1 { margin-top: 0; }
-        .pass { color: #1a7f37; }
-        .fail { color: #d1242f; }
-        #summary { margin: 1rem 0; font-weight: bold; }
-        #fixture { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #ddd; }
-        code { background: #f6f8fa; padding: 0.1rem 0.3rem; border-radius: 4px; }
+        :root {
+            --bg: #f4f5f7;
+            --surface: #ffffff;
+            --surface-alt: #f7f8fa;
+            --text: #1f2329;
+            --text-secondary: #5b6472;
+            --border: #dcdfe4;
+            --border-strong: #c6ccd4;
+            --accent: #2b5fc3;
+            --accent-soft: #e9f0fb;
+            --pass: #1e7d3a;
+            --pass-soft: #e8f3eb;
+            --fail: #b3261e;
+            --fail-soft: #f9eae9;
+            --warn: #b45309;
+            --track: #e7e9ed;
+            --radius: 6px;
+            --shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #16181d;
+                --surface: #1e2128;
+                --surface-alt: #262a33;
+                --text: #e7e9ee;
+                --text-secondary: #98a0ad;
+                --border: #333945;
+                --border-strong: #464e5c;
+                --accent: #6f97e8;
+                --accent-soft: rgba(111, 151, 232, 0.15);
+                --pass: #4fae71;
+                --pass-soft: rgba(79, 174, 113, 0.15);
+                --fail: #e0706a;
+                --fail-soft: rgba(224, 112, 106, 0.15);
+                --warn: #d8a04a;
+                --track: #2b303a;
+                --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page { max-width: 900px; margin: 0 auto; padding: 24px 20px 48px; }
+
+        /* Kopfzeile */
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .logo {
+            width: 34px; height: 34px;
+            display: grid; place-items: center;
+            color: #fff;
+            background: var(--accent);
+            border-radius: var(--radius);
+            flex: 0 0 auto;
+        }
+        .brand h1 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+        .brand .subtitle { margin: 1px 0 0; font-size: 12.5px; color: var(--text-secondary); }
+
+        .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .timestamp { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+        .btn {
+            font: inherit; font-size: 13px; font-weight: 500;
+            padding: 6px 12px;
+            border: 1px solid var(--border-strong);
+            border-radius: 4px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, #000); color: #fff; }
+
+        /* Karten */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+
+        /* Übersicht */
+        .summary-card {
+            position: sticky; top: 12px; z-index: 10;
+            padding: 14px 16px;
+            border-color: var(--border-strong);
+        }
+        .summary-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .summary-status { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); flex: 0 0 auto; }
+        .summary-card.running .status-dot { background: var(--warn); animation: pulse 1.1s ease-in-out infinite; }
+        .summary-card.pass .status-dot { background: var(--pass); }
+        .summary-card.fail .status-dot { background: var(--fail); }
+        .summary-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+        .stats {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            margin-top: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .stat { padding: 10px 14px; }
+        .stat + .stat { border-left: 1px solid var(--border); }
+        .stat .label { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-secondary); }
+        .stat .num { display: block; margin-top: 2px; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+        .stat.pass .num { color: var(--pass); }
+        .stat.fail .num { color: var(--fail); }
+        .stat.rate .num { color: var(--accent); }
+
+        .progress-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+        .progress { flex: 1; height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; display: flex; }
+        .progress span { display: block; height: 100%; transition: width .25s ease; }
+        .progress .seg-pass { background: var(--pass); }
+        .progress .seg-fail { background: var(--fail); }
+        .progress-label { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-secondary); min-width: 36px; text-align: right; }
+
+        /* Ergebnisse */
+        .results-card { padding: 14px 16px; }
+        .results-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+
+        .filter-tabs { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 4px; overflow: hidden; }
+        .filter-tab {
+            font: inherit; font-size: 12.5px; font-weight: 500;
+            padding: 5px 12px;
+            border: 0;
+            border-right: 1px solid var(--border);
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .filter-tab:last-child { border-right: 0; }
+        .filter-tab:hover { color: var(--text); }
+        .filter-tab.active { background: var(--surface); color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+        .tab-count { font-size: 11px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+
+        .results-hint { font-size: 12px; color: var(--text-secondary); }
+        .results-tip { margin: 0 0 12px; font-size: 12px; color: var(--text-secondary); }
+
+        #results-groups { display: flex; flex-direction: column; gap: 16px; }
+
+        .group-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+        .group-header h3 { margin: 0; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); }
+        .group-chip { font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+        .group-chip.ok { color: var(--pass); }
+        .group-chip.bad { color: var(--fail); }
+
+        .group-results { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+        .result {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            column-gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--border);
+            border-radius: 4px;
+            background: var(--surface);
+            cursor: pointer;
+        }
+        .result:hover { border-color: var(--border-strong); background: var(--surface-alt); }
+        .result.pass { border-left-color: var(--pass); }
+        .result.fail { border-left-color: var(--fail); }
+        .result:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+        .indicator { width: 9px; height: 9px; border-radius: 2px; background: var(--border-strong); }
+        .result.pass .indicator { background: var(--pass); }
+        .result.fail .indicator { background: var(--fail); }
+
+        .row-main { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
+        .row-name { font-size: 13px; font-weight: 500; word-break: break-word; }
+        .row-meta { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+        .status-chip { font-size: 10.5px; font-weight: 600; letter-spacing: .06em; }
+        .status-chip.ok { color: var(--pass); }
+        .status-chip.bad { color: var(--fail); }
+        .row-duration { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+        .row-chevron { font-size: 11px; color: var(--text-secondary); transition: transform .15s ease; }
+        .result.expanded .row-chevron { transform: rotate(180deg); }
+
+        .info-panel { grid-column: 1 / -1; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .info-block { padding: 10px 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface-alt); }
+        .info-label { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text-secondary); margin-bottom: 4px; }
+        .info-text { margin: 0; font-size: 13px; }
+
+        .error-details { padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--fail) 35%, var(--border)); border-radius: 4px; background: var(--fail-soft); }
+        .error-message { font-size: 13px; font-weight: 600; color: var(--fail); }
+        .error-stack {
+            margin: 8px 0 0;
+            padding: 8px 10px;
+            max-height: 200px;
+            overflow: auto;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--surface);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: var(--text-secondary);
+        }
+
+        .empty-state { text-align: center; padding: 32px 16px; font-size: 13px; color: var(--text-secondary); }
+
+        /* Fixture */
+        .fixture-card { padding: 14px 16px; }
+        .card-toggle {
+            display: flex; align-items: center; justify-content: space-between; width: 100%;
+            font: inherit; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
+            color: var(--text-secondary); background: none; border: 0; cursor: pointer; padding: 0;
+        }
+        .card-toggle:hover { color: var(--text); }
+        #fixture {
+            margin-top: 10px;
+            border: 1px dashed var(--border-strong);
+            border-radius: 4px;
+            padding: 12px;
+            min-height: 40px;
+            background: var(--surface-alt);
+            font-size: 13px;
+        }
+        #fixture:empty::before { content: "Keine Fixture – die Tests bauen ihr DOM selbst auf."; color: var(--text-secondary); }
+
+        .footer { padding: 12px 4px 0; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); }
+
+        @media (max-width: 640px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .stat:nth-child(3) { border-left: 0; }
+            .stat:nth-child(n+3) { border-top: 1px solid var(--border); }
+            .summary-card { position: static; }
+            .row-main { flex-direction: column; align-items: flex-start; gap: 2px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 <body>
-<h1>Webshop UI Smoke Tests (No Framework)</h1>
-<p>Open browser console for detailed errors.</p>
-<div id="summary">Running...</div>
-<ul id="results"></ul>
-<div id="fixture" aria-live="polite"></div>
+<div class="page">
+    <header class="topbar">
+        <div class="brand">
+            <div class="logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2 4 5.5V11c0 5.2 3.4 9.7 8 11 4.6-1.3 8-5.8 8-11V5.5L12 2z"/>
+                    <path d="m8.5 12 2.5 2.5 4.5-4.5"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Webshop UI · Smoke Tests</h1>
+                <p class="subtitle">Automatisierte UI-Verifikation, direkt im Browser</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <span class="timestamp" id="run-timestamp"></span>
+            <button id="copy-btn" class="btn" type="button">Ergebnisse exportieren</button>
+            <button id="rerun-btn" class="btn btn-primary" type="button">Neu laden</button>
+        </div>
+    </header>
+
+    <section id="summary" class="card summary-card running">
+        <div class="summary-top">
+            <div class="summary-status">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span id="summary-status" aria-live="polite">Tests werden ausgeführt…</span>
+            </div>
+            <div class="summary-meta">
+                <span>Test <span id="running-index">0</span></span>
+                <span>Laufzeit <span id="elapsed">0 ms</span></span>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat"><span class="label">Tests gesamt</span><span class="num" id="count-total">0</span></div>
+            <div class="stat pass"><span class="label">Erfolgreich</span><span class="num" id="count-passed">0</span></div>
+            <div class="stat fail"><span class="label">Fehlgeschlagen</span><span class="num" id="count-failed">0</span></div>
+            <div class="stat rate"><span class="label">Erfolgsquote</span><span class="num" id="pass-rate">–</span></div>
+        </div>
+        <div class="progress-row">
+            <div class="progress" id="progress-bar"></div>
+            <span class="progress-label" id="progress-label">0%</span>
+        </div>
+    </section>
+
+    <section class="card results-card">
+        <div class="results-toolbar">
+            <div class="filter-tabs" id="filter-tabs">
+                <button class="filter-tab active" data-filter="all" type="button">Alle <span class="tab-count" id="tab-all">0</span></button>
+                <button class="filter-tab" data-filter="pass" type="button">Erfolgreich <span class="tab-count" id="tab-pass">0</span></button>
+                <button class="filter-tab" data-filter="fail" type="button">Fehlgeschlagen <span class="tab-count" id="tab-fail">0</span></button>
+            </div>
+            <span class="results-hint" id="results-hint"></span>
+        </div>
+        <p class="results-tip">Klicken Sie auf einen Test, um Ablauf und erwartetes Ergebnis anzuzeigen.</p>
+        <div id="results-groups"></div>
+        <div id="empty-state" class="empty-state" hidden>Keine Tests in dieser Ansicht.</div>
+    </section>
+
+    <section class="card fixture-card">
+        <button class="card-toggle" id="fixture-toggle" type="button" aria-expanded="false">
+            <span>Test-Fixture</span>
+            <span class="chevron" aria-hidden="true">▸</span>
+        </button>
+        <div id="fixture-wrap" hidden>
+            <div id="fixture" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <footer class="footer">Webshop UI · Smoke Tests — ohne Framework</footer>
+</div>
 <script src="ui-tests.js"></script>
 </body>
 </html>
-

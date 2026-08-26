@@ -52,5 +52,7 @@ async function handleLogout() {
     } catch (err) {
     }
 
-    window.location.href = 'landingpage.html';
+    (window.redirectTo || ((url) => {
+        window.location.href = url;
+    }))('landingpage.html');
 }
