@@ -317,7 +317,6 @@
         return (ms / 1000).toFixed(2) + " s";
     }
 
-    // Filter-Tabs
     document.getElementById("filter-tabs").addEventListener("click", function (event) {
         const button = event.target.closest(".filter-tab");
         if (!button) {
@@ -330,7 +329,6 @@
         renderResults();
     });
 
-    // Fixture ein-/ausklappen
     document.getElementById("fixture-toggle").addEventListener("click", function () {
         const wrap = document.getElementById("fixture-wrap");
         const expanded = wrap.hidden;
@@ -339,12 +337,10 @@
         this.querySelector(".chevron").textContent = expanded ? "▾" : "▸";
     });
 
-    // Tests neu starten
     document.getElementById("rerun-btn").addEventListener("click", function () {
         window.location.reload();
     });
 
-    // Ergebnisse als JSON kopieren
     document.getElementById("copy-btn").addEventListener("click", function () {
         if (!navigator.clipboard || !navigator.clipboard.writeText) {
             alert("Kopieren wird in diesem Browser nicht unterstützt.");
@@ -380,7 +376,6 @@
         });
     });
 
-    // Zeitstempel
     document.getElementById("run-timestamp").textContent = new Date().toLocaleString("de-CH");
 
     async function run() {
@@ -540,15 +535,6 @@
             assert(!isDisabled, "Checkout sollte aktiviert sein");
         });
 
-        // ============================================================
-// Diese Blöcke gehören in deine bestehende Test-Datei,
-// direkt VOR der Zeile:
-//   const passed = testResults.filter(function (r) { return r.passed; }).length;
-// ============================================================
-
-// --------------------------------------------------------------
-// logout.js
-// --------------------------------------------------------------
 
         await runTest("logout: updateNavigation zeigt Login/Registrieren wenn ausgeloggt", {
             description: "Ruft updateNavigation() auf, ohne dass ein Benutzer eingeloggt ist.",
@@ -580,8 +566,6 @@
             assert(container.textContent.includes("Abmelden"), "Abmelden-Text fehlt");
         });
 
-// Voraussetzung: handleLogout() in logout.js nutzt window.redirectTo(url)
-// statt direkt window.location.href zu setzen (siehe Vorschlag oben).
         await runTest("logout: handleLogout leert localStorage und ruft POST /users/logout auf", {
             description: "Setzt Benutzerdaten (username, userEmail, isAdmin) und ruft handleLogout() mit gemocktem fetch und redirectTo() auf.",
             expected: "Ein POST an 'http://localhost:7070/users/logout' wird gesendet. Danach sind username, userEmail und isAdmin aus dem localStorage entfernt, der Admin-Button-Container ist leer und die Weiterleitung auf 'landingpage.html' erfolgt."
@@ -620,9 +604,7 @@
             assertEqual(capturedRedirect, "landingpage.html", "Redirect nach Logout fehlt");
         });
 
-// --------------------------------------------------------------
-// adminHub.js
-// --------------------------------------------------------------
+
 
         function fixtureAdminForm() {
             return "" +
