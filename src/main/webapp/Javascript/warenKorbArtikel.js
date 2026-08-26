@@ -1,6 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     setCheckoutButtonState(false);
     renderCart();
+    updateAdmin();
+
+    async function updateAdmin() {
+        const adminButtonContainer = document.getElementById('adminButtonContainer');
+        if (adminButtonContainer) {
+            const isAdmin = localStorage.getItem('isAdmin')
+            if (isAdmin === 'true') {
+                // Admin-Button erzeugen
+                const adminButton = `<a href="../HTML/adminHub.html" class="btn btn-outline-light">
+                                            <i class="bi bi-gear"></i> Admin Bereich</a>`;
+                adminButtonContainer.innerHTML = `${adminButton}`;
+            } else {
+                adminButtonContainer.innerHTML = ``;
+            }
+        }
+    }
 
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn) {
