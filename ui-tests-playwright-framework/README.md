@@ -31,14 +31,14 @@ This is a minimal-framework UI test setup for `bi7-webshop-ui`.
 ## Install
 
 ```bash
-cd /home/a2b/src/bi7-webshop-ui/ui-tests
+cd /home/a2b/src/bi7-webshop-ui/ui-tests-playwright-framework
 npm install
 ```
 
 ## Run tests
 
 ```bash
-cd /home/a2b/src/bi7-webshop-ui/ui-tests
+cd /home/a2b/src/bi7-webshop-ui/ui-tests-playwright-framework
 npm test
 ```
 
