@@ -40,7 +40,7 @@ async function handleSubmit(event) {
     };
 
     try {
-        const res = await fetch(`${ADMIN_API_BASE}/artikel`, {
+        const res = await fetch(`${ADMIN_API_BASE}/artikel/addNew`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             credentials: 'include',
