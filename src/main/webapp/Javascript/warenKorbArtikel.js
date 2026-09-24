@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adminButtonContainer) {
             const isAdmin = localStorage.getItem('isAdmin')
             if (isAdmin === 'true') {
-                // Admin-Button erzeugen
+
                 const adminButton = `<a href="../HTML/adminHub.html" class="btn btn-outline-light">
                                             <i class="bi bi-gear"></i> Admin Bereich</a>`;
                 adminButtonContainer.innerHTML = `${adminButton}`;
@@ -61,13 +61,13 @@ async function renderCart() {
     }
 
     try {
-        const response = await fetch(`http://localhost:7070/api/warenkorb/${encodeURIComponent(userEmail)}`);
+        const response = await apiFetch(`/api/warenkorb/${encodeURIComponent(userEmail)}`);
 
-        if (!response.ok) {
+        if (response instanceof Response) {
             throw new Error('Warenkorb konnte nicht geladen werden.');
         }
 
-        const cart = await response.json();
+        const cart = response;
 
         cartContainer.innerHTML = '';
 
@@ -150,11 +150,11 @@ async function changeQuantity(warenkorbItemId, menge) {
     }
 
     try {
-        const response = await fetch(`http://localhost:7070/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}?menge=${encodeURIComponent(menge)}`, {
-            method: 'PUT'
+        const response = await apiFetch(`/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
+            method: 'PUT', request: new WarenkorbMengeRequest(menge)
         });
 
-        if (!response.ok) {
+        if (response instanceof Response) {
             throw new Error('Menge konnte nicht aktualisiert werden.');
         }
 
@@ -166,11 +166,11 @@ async function changeQuantity(warenkorbItemId, menge) {
 
 async function removeFromCart(warenkorbItemId) {
     try {
-        const response = await fetch(`http://localhost:7070/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
+        const response = await apiFetch(`/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
             method: 'DELETE'
         });
 
-        if (!response.ok) {
+        if (response instanceof Response) {
             throw new Error('Warenkorb-Artikel konnte nicht entfernt werden.');
         }
 

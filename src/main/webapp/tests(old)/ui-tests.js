@@ -1,3 +1,4 @@
+/*
 (function () {
     const fixture = document.getElementById("fixture");
     const summaryEl = document.getElementById("summary");
@@ -605,7 +606,6 @@
         });
 
 
-
         function fixtureAdminForm() {
             return "" +
                 "<form id='adminForm'>" +
@@ -888,3 +888,4 @@
     run();
 })();
 
+*/

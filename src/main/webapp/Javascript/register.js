@@ -20,24 +20,19 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         return;
     }
 
-    const userData = {
-        username: username,
-        email: email,
-        password: password
-    };
+    const registerRequest = new RegisterBenutzerRequest(
+        username,
+        email,
+        password
+    );
 
     try {
-        const res = await fetch('http://localhost:7070/users/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
+        const res = await apiFetch('/users/register', { method: 'POST', request: registerRequest });
 
-        if (res.ok) {
+        if (!(res instanceof Response)) {
             window.location.href = 'registrationSucces.html';
         } else {
-            const result = await res.json();
-            alert('Fehler: ' + (result.error || 'Registrierung fehlgeschlagen'));
+            alert('Fehler: ' + await apiErrorMessage(res, 'Registrierung fehlgeschlagen'));
         }
     } catch (err) {
         alert('Server nicht erreichbar!');

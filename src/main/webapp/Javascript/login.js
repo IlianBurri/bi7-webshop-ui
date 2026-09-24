@@ -7,7 +7,6 @@ async function updateAdmin() {
     if (adminButtonContainer) {
         const isAdmin = localStorage.getItem('isAdmin')
         if (isAdmin === 'true') {
-            // Admin-Button erzeugen
             const adminButton = `<a href="../HTML/adminHub.html" class="btn btn-outline-light">
                                             <i class="bi bi-gear"></i> Admin Bereich</a>`;
             adminButtonContainer.innerHTML = `${adminButton}`;
@@ -20,36 +19,30 @@ async function updateAdmin() {
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const userData = {
-        email: document.getElementById('email').value.trim(),
-        password: document.getElementById('password').value
-    };
+    const loginRequest = new LoginBenutzerRequest(
+        document.getElementById('email').value.trim(),
+        document.getElementById('password').value
+    );
 
     try {
-        const res = await fetch('http://localhost:7070/users/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(userData)
-        });
+        const res = await apiFetch('/users/login', { method: 'POST', request: loginRequest });
 
-        if (res.ok) {
-            const json = await res.json();
+        if (!(res instanceof Response)) {
+            const loginResponse = res;
 
             // Dieses If braucht es eigentlich nicht, da der Login-Button nicht mehr verfügbar ist wenn man eingeloggt ist!
-            if (json.status === 'info') {
-                alert(json.error);
+            if (loginResponse.status === 'info') {
+                alert(loginResponse.error);
                 window.location.href = '../HTML/landingpage.html';
                 return;
             }
 
-            localStorage.setItem('username', json.username);
-            localStorage.setItem('userEmail', userData.email);
-            localStorage.setItem('isAdmin', json.isAdmin);
+            localStorage.setItem('username', loginResponse.username);
+            localStorage.setItem('userEmail', loginRequest.email);
+            localStorage.setItem('isAdmin', loginResponse.isAdmin);
             window.location.href = '../HTML/landingpage.html';
         } else {
-            const result = await res.json();
-            alert('Fehler: ' + (result.error || 'Login fehlgeschlagen'));
+            alert('Fehler: ' + await apiErrorMessage(res, 'Login fehlgeschlagen'));
         }
     } catch (err) {
         console.error('Netzwerk-/Serverfehler:', err);

@@ -1,11 +1,14 @@
-const ADMIN_API_BASE = 'http://localhost:7070';
-
 const MAX_NAME_LAENGE = 255;
 const MIN_PREIS = 0.01;
 const MAX_PREIS = 99999999.99;
 const MAX_BILD_LAENGE = 500;
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('isAdmin') !== 'true') {
+        clearAuthState();
+        window.location.href = 'loginForm.html';
+        return;
+    }
 
     const form = document.getElementById('adminForm');
     if (form) {
@@ -33,24 +36,19 @@ async function handleSubmit(event) {
         return;
     }
 
-    const artikel = {
-        name: nameInput.value.trim(),
-        preis: Math.round(Number(preisInput.value) * 100) / 100,
-        bild: bildInput.value.trim()
-    };
+    const addArtikelRequest = new AddArtikelRequest(
+        nameInput.value.trim(),
+        Math.round(Number(preisInput.value) * 100) / 100,
+        bildInput.value.trim()
+    );
 
     try {
-        const res = await fetch(`${ADMIN_API_BASE}/artikel/addNew`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-            body: JSON.stringify(artikel)
-        });
+        const res = await apiFetch('/artikel/addNew', { method: 'POST', request: addArtikelRequest });
 
-        if (!res.ok) {
-            if (res.status === 403) {
+        if (res instanceof Response) {
+            if (res.status === 401 || res.status === 403) {
                 clearAuthState();
-                setStatus('Sitzung abgelaufen oder keine Berechtigung. Bitte erneut als Admin einloggen.', 'error');
+                setStatus('Keine Berechtigung oder Sitzung abgelaufen. Bitte erneut als Admin einloggen.', 'error');
                 (window.redirectTo || ((url) => {
                     window.location.href = url;
                 }))('loginForm.html');
@@ -70,6 +68,12 @@ async function handleSubmit(event) {
         console.error('Fehler beim Hinzufügen des Artikels:', err);
         setStatus('Artikel konnte nicht hinzugefügt werden. Läuft das Backend?', 'error');
     }
+}
+
+function clearAuthState() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('isAdmin');
 }
 
 function validateName(name) {

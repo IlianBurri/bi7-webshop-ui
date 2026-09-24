@@ -45,10 +45,7 @@ async function handleLogout() {
     }
 
     try {
-        await fetch('http://localhost:7070/users/logout', {
-            method: 'POST',
-            credentials: 'include'
-        });
+        await apiFetch('/users/logout', { method: 'POST' });
     } catch (err) {
     }
 

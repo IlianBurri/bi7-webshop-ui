@@ -5,13 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchArtikel() {
     const container = document.getElementById('products');
 
-    // Hinweis: Der Lade-Spinner wird hier per JavaScript erzeugt – es gibt kein
-    // statisches Loader-Element im HTML. Das CSS dazu steht in products.css (.spinner).
     if (container) {
         container.innerHTML = '<div class="spinner"></div>';
     }
 
-    fetchArtikelListe(['http://localhost:7070/artikel', '/api/artikel'])
+    fetchArtikelListe()
         .then(response => {
             displayArtikel(response);
         })
@@ -29,30 +27,12 @@ function fetchArtikel() {
         });
 }
 
-async function fetchArtikelListe(endpoints) {
-    let lastError = null;
-
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                lastError = new Error('Netzwerk-Antwort war nicht ok: ' + response.statusText);
-                continue;
-            }
-
-            return await response.json();
-        } catch (error) {
-            lastError = error;
-        }
+async function fetchArtikelListe() {
+    const artikel = await apiFetch('/artikel');
+    if (artikel instanceof Response) {
+        throw new Error('Artikel konnten nicht geladen werden.');
     }
-
-    throw lastError ?? new Error('Artikel konnten nicht geladen werden.');
+    return artikel;
 }
 
 function displayArtikel(artikelListe) {
@@ -122,11 +102,11 @@ function inDenWarenkorb(artikelId, menge = 1) {
         return;
     }
 
-    fetch(`http://localhost:7070/api/warenkorb/add?email=${encodeURIComponent(userEmail)}&artikelId=${encodeURIComponent(artikelId)}&menge=${encodeURIComponent(menge)}`, {
-        method: 'POST'
-    })
+    const addRequest = new WarenkorbAddRequest(userEmail, artikelId, menge);
+
+    apiFetch('/api/warenkorb/add', { method: 'POST', request: addRequest })
         .then(response => {
-            if (!response.ok) {
+            if (response instanceof Response) {
                 throw new Error('Artikel konnte nicht hinzugefügt werden.');
             }
 
