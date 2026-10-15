@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://192.168.1.20';
+// Lokaler Backend-Service:
+const API_BASE_URL = 'http://localhost:7070';
+// Remote Backend-Service:
+// const API_BASE_URL = 'http://192.168.1.20:7070';
 
 async function apiFetch(path, options = {}) {
     const response = await fetch(`${API_BASE_URL}${path}`, {
