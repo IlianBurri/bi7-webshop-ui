@@ -16,7 +16,7 @@ async function updateAdmin() {
     }
 }
 
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const loginRequest = {
