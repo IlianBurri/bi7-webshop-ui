@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 test("landing page renders products from API", async ({ page }) => {
-  await page.route("http://localhost:7070/artikel", async (route) => {
+  await page.route("http://192.168.1.20/artikel", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -21,7 +21,7 @@ test("landing page renders products from API", async ({ page }) => {
 });
 
 test("add-to-cart shows login alert when user is not logged in", async ({ page }) => {
-  await page.route("http://localhost:7070/artikel", async (route) => {
+  await page.route("http://192.168.1.20/artikel", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -40,6 +40,5 @@ test("add-to-cart shows login alert when user is not logged in", async ({ page }
   await page.getByRole("button", { name: "In den Warenkorb" }).first().click({ force: true });
   await expect.poll(() => dialogMessage).toBe("Bitte erst einloggen!");
 });
-
 
 

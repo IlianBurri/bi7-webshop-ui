@@ -30,7 +30,7 @@ function fetchArtikel() {
 async function fetchArtikelListe() {
     const artikel = await apiFetch('/artikel');
     if (artikel instanceof Response) {
-        throw new Error('Artikel konnten nicht geladen werden.');
+        throw new Error(`Artikel konnten nicht geladen werden (${artikel.status}).`);
     }
     return artikel;
 }
@@ -102,9 +102,10 @@ function inDenWarenkorb(artikelId, menge = 1) {
         return;
     }
 
-    const addRequest = new WarenkorbAddRequest(userEmail, artikelId, menge);
-
-    apiFetch('/api/warenkorb/add', { method: 'POST', request: addRequest })
+    apiFetch('/api/warenkorb/add', {
+        method: 'POST',
+        request: { email: userEmail, artikelId, menge }
+    })
         .then(response => {
             if (response instanceof Response) {
                 throw new Error('Artikel konnte nicht hinzugefügt werden.');

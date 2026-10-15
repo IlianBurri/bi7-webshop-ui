@@ -2,7 +2,6 @@ const MAX_NAME_LAENGE = 255;
 const MIN_PREIS = 0.01;
 const MAX_PREIS = 99999999.99;
 const MAX_BILD_LAENGE = 500;
-
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('isAdmin') !== 'true') {
         clearAuthState();
@@ -36,14 +35,17 @@ async function handleSubmit(event) {
         return;
     }
 
-    const addArtikelRequest = new AddArtikelRequest(
-        nameInput.value.trim(),
-        Math.round(Number(preisInput.value) * 100) / 100,
-        bildInput.value.trim()
-    );
+    const addArtikelRequest = {
+        name: nameInput.value.trim(),
+        preis: Math.round(Number(preisInput.value) * 100) / 100,
+        bild: bildInput.value.trim()
+    };
 
     try {
-        const res = await apiFetch('/artikel/addNew', { method: 'POST', request: addArtikelRequest });
+        const res = await apiFetch('/artikel/addNew', {
+            method: 'POST',
+            request: addArtikelRequest
+        });
 
         if (res instanceof Response) {
             if (res.status === 401 || res.status === 403) {

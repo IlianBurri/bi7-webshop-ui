@@ -5,7 +5,7 @@ test("cart shows computed total and enables checkout", async ({ page }) => {
     localStorage.setItem("userEmail", "test@example.com");
   });
 
-  await page.route("http://localhost:7070/api/warenkorb/test%40example.com", async (route) => {
+  await page.route("http://192.168.1.20/api/warenkorb/test%40example.com", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -30,4 +30,3 @@ test("cart prompts login when there is no stored user", async ({ page }) => {
   await expect(page.locator("#total-price")).toHaveText("CHF 0.00");
   await expect(page.locator("#checkout-btn")).toHaveClass(/disabled/);
 });
-

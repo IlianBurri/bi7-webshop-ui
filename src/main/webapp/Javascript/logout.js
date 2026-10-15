@@ -47,6 +47,7 @@ async function handleLogout() {
     try {
         await apiFetch('/users/logout', { method: 'POST' });
     } catch (err) {
+        console.error('Fehler beim Abmelden:', err);
     }
 
     (window.redirectTo || ((url) => {

@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+async function fetchCheckout(path, options = {}) {
+    return apiFetch(path, options);
+}
+
 async function initCheckoutPage() {
     const userEmail = localStorage.getItem('userEmail');
     const emailInput = document.getElementById('email');
@@ -23,7 +27,7 @@ async function initCheckoutPage() {
     if (!userEmail) return;
 
     try {
-        const response = await apiFetch(`/api/adresse/${encodeURIComponent(userEmail)}`);
+        const response = await fetchCheckout(`/api/adresse/${encodeURIComponent(userEmail)}`);
 
         if (!(response instanceof Response)) {
             populateAddressDropdown(response);
@@ -80,23 +84,25 @@ async function handleCheckoutSubmit(event) {
         if (submitBtn) submitBtn.disabled = true;
 
         if (!addressId || (saveAddressCheckbox && saveAddressCheckbox.checked)) {
-            const adresseRequest = new AdresseRequest(
-                userEmail ? userEmail.trim() : '',
-                document.getElementById('vorname').value.trim(),
-                document.getElementById('nachname').value.trim(),
-                document.getElementById('strasse').value.trim(),
-                document.getElementById('plz').value.trim(),
-                document.getElementById('ort').value.trim(),
-                document.getElementById('land').value.trim() || 'Schweiz'
-            );
+            const adresseRequest = {
+                userEmail: userEmail ? userEmail.trim() : '',
+                vorname: document.getElementById('vorname').value.trim(),
+                nachname: document.getElementById('nachname').value.trim(),
+                strasse: document.getElementById('strasse').value.trim(),
+                plz: document.getElementById('plz').value.trim(),
+                ort: document.getElementById('ort').value.trim(),
+                land: document.getElementById('land').value.trim() || 'Schweiz'
+            };
 
-            const addrResponse = await apiFetch('/api/adresse', { method: 'POST', request: adresseRequest });
+            const addrResponse = await fetchCheckout('/api/adresse', {
+                method: 'POST',
+                request: adresseRequest
+            });
 
             if (!(addrResponse instanceof Response)) {
                 addressId = addrResponse.adressId;
             } else {
-                const errorMessage = await apiErrorMessage(addrResponse, 'Unbekannter Fehler beim Speichern der Adresse.');
-                alert(`Adresse konnte nicht gespeichert werden: ${errorMessage}`);
+                alert('Adresse konnte nicht gespeichert werden.');
 
                 if (submitBtn) submitBtn.disabled = false;
                 return;
@@ -111,20 +117,21 @@ async function handleCheckoutSubmit(event) {
             return;
         }
 
-        const checkoutResponse = await apiFetch('/api/bestellung/checkout', {
-            method: 'POST', request: new CheckoutRequest(parsedAdressId)
+        const checkoutResponse = await fetchCheckout('/api/bestellung/checkout', {
+            method: 'POST',
+            request: { adressId: parsedAdressId }
         });
 
         if (!(checkoutResponse instanceof Response)) {
-            alert(`Vielen Dank für deine Bestellung! (Bestell-ID: ${checkoutResponse.bestellungId})`);
+            const checkoutResult = checkoutResponse;
+            alert(`Vielen Dank für deine Bestellung! (Bestell-ID: ${checkoutResult.bestellungId})`);
             window.location.href = 'landingpage.html';
         } else if (checkoutResponse.status === 401) {
             alert('Deine Sitzung ist abgelaufen. Bitte logge dich erneut ein.');
             window.location.href = 'loginForm.html';
         } else {
-            const errorText = await apiErrorMessage(checkoutResponse, 'Unbekannter Fehler');
-            console.error(`Checkout Fehler (${checkoutResponse.status}):`, errorText);
-            alert(`Fehler beim Checkout: ${errorText}`);
+            console.error(`Checkout Fehler (${checkoutResponse.status})`);
+            alert('Fehler beim Checkout.');
         }
 
     } catch (error) {

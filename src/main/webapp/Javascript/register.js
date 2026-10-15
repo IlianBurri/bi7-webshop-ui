@@ -20,14 +20,13 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         return;
     }
 
-    const registerRequest = new RegisterBenutzerRequest(
-        username,
-        email,
-        password
-    );
+    const registerRequest = { username, email, password };
 
     try {
-        const res = await apiFetch('/users/register', { method: 'POST', request: registerRequest });
+        const res = await apiFetch('/users/register', {
+            method: 'POST',
+            request: registerRequest
+        });
 
         if (!(res instanceof Response)) {
             window.location.href = 'registrationSucces.html';

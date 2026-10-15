@@ -19,10 +19,10 @@ async function updateAdmin() {
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const loginRequest = new LoginBenutzerRequest(
-        document.getElementById('email').value.trim(),
-        document.getElementById('password').value
-    );
+    const loginRequest = {
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+    };
 
     try {
         const res = await apiFetch('/users/login', { method: 'POST', request: loginRequest });

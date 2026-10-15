@@ -28,6 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+async function fetchCart(path, options = {}) {
+    const response = await apiFetch(path, options);
+    if (response instanceof Response) {
+        throw new Error(`Warenkorb-Anfrage fehlgeschlagen (${response.status}).`);
+    }
+    return response;
+}
+
 function setCheckoutButtonState(enabled) {
     const checkoutBtn = document.getElementById('checkout-btn');
     if (!checkoutBtn) return;
@@ -61,13 +69,7 @@ async function renderCart() {
     }
 
     try {
-        const response = await apiFetch(`/api/warenkorb/${encodeURIComponent(userEmail)}`);
-
-        if (response instanceof Response) {
-            throw new Error('Warenkorb konnte nicht geladen werden.');
-        }
-
-        const cart = response;
+        const cart = await fetchCart(`/api/warenkorb/${encodeURIComponent(userEmail)}`);
 
         cartContainer.innerHTML = '';
 
@@ -150,13 +152,10 @@ async function changeQuantity(warenkorbItemId, menge) {
     }
 
     try {
-        const response = await apiFetch(`/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
-            method: 'PUT', request: new WarenkorbMengeRequest(menge)
+        await fetchCart(`/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
+            method: 'PUT',
+            body: JSON.stringify({ menge })
         });
-
-        if (response instanceof Response) {
-            throw new Error('Menge konnte nicht aktualisiert werden.');
-        }
 
         await renderCart();
     } catch (error) {
@@ -166,13 +165,9 @@ async function changeQuantity(warenkorbItemId, menge) {
 
 async function removeFromCart(warenkorbItemId) {
     try {
-        const response = await apiFetch(`/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
+        await fetchCart(`/api/warenkorb/item/${encodeURIComponent(warenkorbItemId)}`, {
             method: 'DELETE'
         });
-
-        if (response instanceof Response) {
-            throw new Error('Warenkorb-Artikel konnte nicht entfernt werden.');
-        }
 
         await renderCart();
     } catch (error) {

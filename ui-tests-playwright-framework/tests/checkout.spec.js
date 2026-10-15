@@ -5,7 +5,7 @@ test("checkout can submit and shows success alert", async ({ page }) => {
     localStorage.setItem("userEmail", "test@example.com");
   });
 
-  await page.route("http://localhost:7070/api/adressen?email=test%40example.com", async (route) => {
+  await page.route("http://192.168.1.20/api/adressen?email=test%40example.com", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
   });
 
@@ -33,6 +33,5 @@ test("checkout can submit and shows success alert", async ({ page }) => {
   await page.getByRole("button", { name: "Jetzt bezahlen" }).click({ force: true });
   await expect.poll(() => dialogMessage).toBe("Vielen Dank! Deine Bestellung wurde abgeschlossen.");
 });
-
 
 

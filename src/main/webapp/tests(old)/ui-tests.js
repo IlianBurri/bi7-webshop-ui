@@ -436,7 +436,7 @@
 
         await runTest("login: submit sendet JSON an /users/login", {
             description: "Füllt das Login-Formular mit E-Mail und Passwort aus und löst das submit-Event aus; ein gemocktes fetch fängt die Anfrage ab.",
-            expected: "Ein POST an 'http://localhost:7070/users/login' wird gesendet, dessen Body die E-Mail und das Passwort enthält. Bei Fehler zeigt der Server-Alert eine Meldung, die mit 'Fehler:' beginnt."
+            expected: "Ein POST an 'http://192.168.1.20/users/login' wird gesendet, dessen Body die E-Mail und das Passwort enthält. Bei Fehler zeigt der Server-Alert eine Meldung, die mit 'Fehler:' beginnt."
         }, async function () {
             resetFixture("" +
                 "<form id='loginForm'>" +
@@ -473,7 +473,7 @@
             await tick();
             await tick();
 
-            assertEqual(capturedUrl, "http://localhost:7070/users/login", "Falscher Login-Endpoint");
+            assertEqual(capturedUrl, "http://192.168.1.20/users/login", "Falscher Login-Endpoint");
             assert(capturedBody.includes("max@example.com"), "Email fehlt im Request-Body");
             assert(capturedBody.includes("secret"), "Passwort fehlt im Request-Body");
             assert(alertText.startsWith("Fehler:"), "Fehler-Alert sollte gezeigt werden");
@@ -569,7 +569,7 @@
 
         await runTest("logout: handleLogout leert localStorage und ruft POST /users/logout auf", {
             description: "Setzt Benutzerdaten (username, userEmail, isAdmin) und ruft handleLogout() mit gemocktem fetch und redirectTo() auf.",
-            expected: "Ein POST an 'http://localhost:7070/users/logout' wird gesendet. Danach sind username, userEmail und isAdmin aus dem localStorage entfernt, der Admin-Button-Container ist leer und die Weiterleitung auf 'landingpage.html' erfolgt."
+            expected: "Ein POST an 'http://192.168.1.20/users/logout' wird gesendet. Danach sind username, userEmail und isAdmin aus dem localStorage entfernt, der Admin-Button-Container ist leer und die Weiterleitung auf 'landingpage.html' erfolgt."
         }, async function () {
             resetFixture("<div id='adminButtonContainer'>vorher</div>");
             localStorage.setItem("username", "Max Muster");
@@ -596,7 +596,7 @@
             await loadScript("../Javascript/logout.js");
             await window.handleLogout();
 
-            assertEqual(capturedUrl, "http://localhost:7070/users/logout", "Falscher Logout-Endpoint");
+            assertEqual(capturedUrl, "http://192.168.1.20/users/logout", "Falscher Logout-Endpoint");
             assertEqual(capturedMethod, "POST", "Logout muss per POST erfolgen");
             assertEqual(localStorage.getItem("username"), null, "username muss geleert werden");
             assertEqual(localStorage.getItem("userEmail"), null, "userEmail muss geleert werden");
@@ -699,7 +699,7 @@
 
         await runTest("adminHub: erfolgreicher Submit sendet POST und leert das Formular", {
             description: "Füllt das Admin-Formular mit gültigen Werten und ruft handleSubmit() mit gemocktem fetch auf.",
-            expected: "Ein POST an 'http://localhost:7070/artikel' wird mit dem Artikel im Request-Body gesendet. Danach werden die Eingabefelder geleert und eine Erfolgsmeldung (mit 'erfolgreich') angezeigt."
+            expected: "Ein POST an 'http://192.168.1.20/artikel' wird mit dem Artikel im Request-Body gesendet. Danach werden die Eingabefelder geleert und eine Erfolgsmeldung (mit 'erfolgreich') angezeigt."
         }, async function () {
             resetFixture(fixtureAdminForm());
             let capturedUrl = "";
@@ -730,7 +730,7 @@
                 }
             });
 
-            assertEqual(capturedUrl, "http://localhost:7070/artikel", "Falscher Endpoint");
+            assertEqual(capturedUrl, "http://192.168.1.20/artikel", "Falscher Endpoint");
             assert(capturedBody.includes("Testartikel"), "Name fehlt im Request-Body");
             assertEqual(document.getElementById("artikelName").value, "", "Name-Feld muss geleert werden");
             assert(document.getElementById("formStatus").textContent.includes("erfolgreich"), "Erfolgsmeldung fehlt");
