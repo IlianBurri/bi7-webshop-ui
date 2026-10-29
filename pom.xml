@@ -31,19 +31,19 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>12.1.10</version>
+            <version>12.1.14</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-rewrite</artifactId>
-            <version>12.1.10</version>
+            <version>12.1.14</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.ee10</groupId>
             <artifactId>jetty-ee10-webapp</artifactId>
-            <version>12.1.10</version>
+            <version>12.1.14</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

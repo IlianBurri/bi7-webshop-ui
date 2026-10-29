@@ -4,13 +4,13 @@ import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.CrossOriginHandler;
+//import org.eclipse.jetty.server.handler.CrossOriginHandler;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
+//import java.util.Set;
 
 // https://jetty.org/docs/jetty/12.1/operations-guide/session/index.html
 public class BI7WebshopWebserver {
@@ -42,17 +42,18 @@ public class BI7WebshopWebserver {
         webAppContext.setContextPath("/");
 
         // Cors Handler
-        CrossOriginHandler crossOriginHandler = new CrossOriginHandler();
-        crossOriginHandler.setAllowedOriginPatterns(Set.of("*"));
-        crossOriginHandler.setAllowedMethods(Set.of("GET", "POST", "HEAD"));
-        crossOriginHandler.setAllowedHeaders(Set.of("X-Requested-With", "Content-Type", "Accept", "Origin", "Access-Control-Allow-Origin", "authorization"));
-        crossOriginHandler.setAllowCredentials(true);
-        server.setHandler(crossOriginHandler);
+//        CrossOriginHandler crossOriginHandler = new CrossOriginHandler();
+//        crossOriginHandler.setAllowedOriginPatterns(Set.of("*"));
+//        crossOriginHandler.setAllowedMethods(Set.of("GET", "POST", "HEAD"));
+//        crossOriginHandler.setAllowedHeaders(Set.of("X-Requested-With", "Content-Type", "Accept", "Origin", "Access-Control-Allow-Origin", "authorization"));
+//        crossOriginHandler.setAllowCredentials(true);
+//        server.setHandler(crossOriginHandler);
 
         RewriteHandler rewriteHandler = new RewriteHandler();
         rewriteHandler.setHandler(webAppContext);
         RedirectRegexRule redirectRule = new RedirectRegexRule("^/$", "/HTML/landingpage.html");
         rewriteHandler.addRule(redirectRule);
+        server.setHandler(rewriteHandler);
 
         server.start();
         System.out.println("Server started!");
